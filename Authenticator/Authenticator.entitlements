@@ -14,7 +14,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.yubico.Authenticator</string>
+		<string>group.com.offline.authenticator</string>
 	</array>
 	<key>com.apple.security.device.camera</key>
 	<true/>

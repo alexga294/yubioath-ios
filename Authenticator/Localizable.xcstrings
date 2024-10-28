@@ -909,7 +909,7 @@
       }
     },
     "Invalid signature" : {
-      "comment" : "PIV extension NFC invalid signature",
+      "comment" : "PIV extension NFC invalid signature\nPIV extension invalid signature",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -993,6 +993,7 @@
       }
     },
     "Menu" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -1648,7 +1649,7 @@
       }
     },
     "Remove password" : {
-      "comment" : "Remove password alert title",
+      "comment" : "Remove password alert button\nRemove password alert title",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -2474,6 +2475,7 @@
     },
     "What's new in\nYubico Authenticator" : {
       "comment" : "Version history title",
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {

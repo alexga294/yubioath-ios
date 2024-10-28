@@ -44,10 +44,6 @@ struct ListStatusView: View {
             Spacer()
         }
         .frame(height: height - 100)
-        .listRowSeparator(.hidden)
-        .sheet(isPresented: $showWhatsNew) {
-            VersionHistoryView(title: String(localized: "What's new in\nYubico Authenticator", comment: "Version history title"))
-        }
     }
 }
 

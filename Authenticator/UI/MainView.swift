@@ -25,11 +25,8 @@ struct MainView: View {
     
     @StateObject var model = MainViewModel()
     @State var showAccountDetails: AccountDetailsData? = nil
-    @State var showAddAccount: Bool = false
     @State var addAccountCancellable: AnyCancellable?
     @State var addAccountSubject = PassthroughSubject<(YKFOATHCredentialTemplate?, Bool), Never>()
-    @State var showConfiguration: Bool = false
-    @State var showAbout: Bool = false
     @State var password: String = ""
     @State var searchText: String = ""
     @State var didEnterBackground = true
@@ -107,36 +104,6 @@ struct MainView: View {
                             model.updateAccountsOverNFC() }
                     }
                 }
-                
-                ToolbarItem(placement: .principal) {
-                    if !model.accountsLoaded && !UIAccessibility.isVoiceOverRunning {
-                        Image("NavbarLogo")
-                            .renderingMode(.template)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 200, height: 20)
-                            .foregroundColor(Color("YubiGreen"))
-                            .accessibilityHidden(true)
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button(action: { showAddAccount.toggle() }) {
-                            Label("Add account", systemImage: "qrcode")
-                        }
-                        .disabled(!YubiKitDeviceCapabilities.supportsISO7816NFCTags && !model.isKeyPluggedIn)
-                        Button(action: { showConfiguration.toggle() }) {
-                            Label("Configuration", systemImage: "switch.2")
-                        }
-                        .disabled(!YubiKitDeviceCapabilities.supportsISO7816NFCTags && !model.isKeyPluggedIn)
-                        Button(action: { showAbout.toggle() }) {
-                            Label("About", systemImage: "questionmark.circle")
-                        }
-                    } label: {
-                        Label("Menu", systemImage: "ellipsis.circle")
-                    }
-                }
             }
             .navigationTitle(model.accountsLoaded ? String(localized: "Accounts", comment: "Navigation title in main view.") : "")
         }
@@ -145,15 +112,6 @@ struct MainView: View {
             if showAccountDetails != nil {
                 AccountDetailsView(data: $showAccountDetails)
             }
-        }
-        .sheet(isPresented: $showAddAccount) {
-            AddAccountView(showAddCredential: $showAddAccount, accountSubject: addAccountSubject, oathURL: oathURL)
-        }
-        .fullScreenCover(isPresented: $showConfiguration) {
-            ConfigurationView(showConfiguration: $showConfiguration)
-        }
-        .fullScreenCover(isPresented: $showAbout) {
-            AboutView(showHelp: $showAbout)
         }
         .fullScreenCover(isPresented: $model.presentDisableOTP) {
             DisableOTPView()
@@ -191,17 +149,8 @@ struct MainView: View {
                 }
             }
         }
-        .onOpenURL(perform: { url in
-            guard url.scheme == "otpauth" else { return }
-            if showConfiguration { showConfiguration.toggle() }
-            if showAbout { showAbout.toggle() }
-            oathURL = url
-            showAddAccount.toggle()
-        })
         .onContinueUserActivity(NSUserActivityTypeBrowsingWeb, perform: { userActivity in
             guard let otp = userActivity.webpageURL?.yubiOTP else { return }
-            if showConfiguration { showConfiguration.toggle() }
-            if showAbout { showAbout.toggle() }
             self.otp = otp
             if ApplicationSettingsViewModel().isNFCOnOTPLaunchEnabled {
                 model.updateAccountsOverNFC()
@@ -228,9 +177,6 @@ struct MainView: View {
         }
         .onChange(of: notificationsViewModel.showPIVTokenView) { showPIVTokenview in
             if showPIVTokenview {
-                showAddAccount = false
-                showConfiguration = false
-                showAbout = false
                 showAccountDetails = nil
             }
         }
