@@ -27,7 +27,6 @@ struct ListStatusView: View {
         HStack {
             Spacer()
             VStack(spacing: 25) {
-                Spacer()
                 image
                     .font(.system(size: 100.0))
                     .foregroundColor(Color(.yubiBlue))
@@ -37,36 +36,10 @@ struct ListStatusView: View {
                     .multilineTextAlignment(.center)
                     .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))
                 Spacer()
-                if SettingsConfig.showWhatsNewText {
-                    WhatsNewView(showWhatsNew: $showWhatsNew)
-                }
             }
             Spacer()
         }
-        .frame(height: height - 100)
-    }
-}
-
-struct WhatsNewView: View {
-    
-    var text: AttributedString {
-        var see = AttributedString(localized: "See ", comment: "Substring in \"See what's new in this version\"")
-        see.foregroundColor = .secondaryLabel
-        var whatsNew = AttributedString(localized: "what's new", comment: "Substring in \"See what's new in this version\"")
-        whatsNew.foregroundColor = Color(.yubiBlue)
-        var inThisVersion = AttributedString(localized: " in this version", comment: "Substring in \"See what's new in this version\"")
-        inThisVersion.foregroundColor = .secondaryLabel
-        return see + whatsNew + inThisVersion
-    }
-    
-    @Binding var showWhatsNew: Bool
-
-    var body: some View {
-        Button {
-            showWhatsNew.toggle()
-        } label: {
-            Text(text).font(.footnote)
-        }
+        .frame(height: height)
     }
 }
 

@@ -3,6 +3,7 @@
   "strings" : {
     " in this version" : {
       "comment" : "Substring in \"See what's new in this version\"",
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -1884,6 +1885,7 @@
     },
     "See " : {
       "comment" : "Substring in \"See what's new in this version\"",
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -2457,6 +2459,7 @@
     },
     "what's new" : {
       "comment" : "Substring in \"See what's new in this version\"",
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
