@@ -27,6 +27,7 @@ struct MainView: View {
     @State var showAccountDetails: AccountDetailsData? = nil
     @State var addAccountCancellable: AnyCancellable?
     @State var addAccountSubject = PassthroughSubject<(YKFOATHCredentialTemplate?, Bool), Never>()
+    @State var showAbout: Bool = false
     @State var password: String = ""
     @State var searchText: String = ""
     @State var didEnterBackground = true
@@ -104,7 +105,15 @@ struct MainView: View {
                             model.updateAccountsOverNFC() }
                     }
                 }
-            }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: { showAbout.toggle() }) {
+                            Label("About", systemImage: "questionmark.circle")
+                        }
+                    } label: {
+                        Label("Menu", systemImage: "ellipsis.circle")
+                    }
+                }            }
             .navigationTitle(model.accountsLoaded ? String(localized: "Accounts", comment: "Navigation title in main view.") : "")
         }
         .accessibilityHidden(showAccountDetails != nil)
@@ -113,20 +122,18 @@ struct MainView: View {
                 AccountDetailsView(data: $showAccountDetails)
             }
         }
+        .fullScreenCover(isPresented: $showAbout) {
+            AboutView(showHelp: $showAbout)
+                .onAppear {
+                    model.stop()
+                }.onDisappear {
+                    model.start()
+                }
+        }
         .fullScreenCover(isPresented: $model.presentDisableOTP) {
             DisableOTPView()
         }
-
-        .alert(String(localized: "Enter password", comment: "Password alert"), isPresented: $model.presentPasswordEntry) {
-            SecureField(String(localized: "Password", comment: "Password alert"), text: $password)
-            Button(String(localized: "Cancel", comment: "Password alert"), role: .cancel) { password = "" }
-            Button(String(localized: "Ok", comment: "Password alert")) {
-                model.password.send(password)
-                password = ""
-            }
-        } message: {
-            Text(model.passwordEntryMessage)
-        }
+        .passwordDialog(isPresented: $model.presentPasswordEntry, password:  $password, model: model)
         .alertOrConfirmationDialog(String(localized: "Save password?", comment: "Save password alert"), isPresented: $model.presentPasswordSaveType) {
             Button(String(localized: "Save password", comment: "Save password alert.")) { model.passwordSaveType.send(.some(.save)) }
             let authenticationType = PasswordPreferences.evaluatedAuthenticationType()
@@ -199,6 +206,52 @@ extension View {
             return AnyView(erasing: self.alert<A>(title, isPresented: isPresented, actions: actions))
         } else {
             return AnyView(erasing: self.confirmationDialog<A>(title, isPresented: isPresented, titleVisibility: .visible, actions: actions))
+        }
+    }
+    
+    func passwordDialog(isPresented: Binding<Bool>, password: Binding<String>, model: MainViewModel)  -> some View{
+        if #available(iOS 16 , *) {
+            return self.alert(String(localized: "Enter password", comment: "Password alert"), isPresented: isPresented) {
+                SecureField(String(localized: "Password", comment: "Password alert"), text: password)
+                Button(String(localized: "Cancel", comment: "Password alert"), role: .cancel) {
+                    password.wrappedValue = ""
+                }
+                Button(String(localized: "Ok", comment: "Password alert")) {
+                    model.password.send(password.wrappedValue)
+                    password.wrappedValue = ""
+                }
+            } message: {
+                Text(model.passwordEntryMessage)
+            }
+        }
+        else{
+            return self.fullScreenCover(isPresented: isPresented) {
+                VStack(spacing: 20) {
+                    Text(String(localized: "Enter password", comment: "Password alert")).font(.headline)
+                    Text(model.passwordEntryMessage)
+                    SecureField(String(localized: "Password", comment: "Password alert"), text: password)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    HStack {
+                        Spacer()
+                        Button(String(localized: "Cancel", comment: "Password alert"), role: .cancel) {
+                            password.wrappedValue = ""
+                            model.presentPasswordEntry = false;
+                        }
+                        Spacer()
+                        Button(String(localized: "Ok", comment: "Password alert")) {
+                            model.password.send(password.wrappedValue)
+                            password.wrappedValue = ""
+                            model.presentPasswordEntry = false;
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    .cornerRadius(10)
+                    .shadow(radius: 10)
+                    .padding()
+                }
+            }
         }
     }
 }

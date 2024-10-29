@@ -17,9 +17,7 @@
 import UIKit
 
 class HelpViewController: UITableViewController {
-
-    // MARK: - Table view data source
-    
+  
     @IBOutlet weak var versionLabel: UILabel!
     
     override func viewDidLoad() {
@@ -29,26 +27,8 @@ class HelpViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (indexPath.section, indexPath.row) {
-        case (0, 1):
-            let whatsNewController = VersionHistoryViewController()
-            self.present(whatsNewController, animated: true)
-        case (0, 2):
-            if let url = URL(string: "https://www.yubico.com/support/terms-conditions/yubico-license-agreement/") {
-                UIApplication.shared.open(url)
-            }
-        case (0, 3):
-            if let url = URL(string: "https://www.yubico.com/support/terms-conditions/privacy-notice/") {
-                UIApplication.shared.open(url)
-            }
-        case (0, 4):
-            let licensingViewController = LicensingViewController()
-            self.navigationController?.pushViewController(licensingViewController, animated: true)
-        case (1, 0):
-            if let url = URL(string: "https://support.yubico.com/") {
-                UIApplication.shared.open(url)
-            }
-        case (1, 1):
-            if let url = URL(string: "https://support.yubico.com/support/tickets/new") {
+        case (0, 0):
+            if let url = URL(string: "https://github.com/alexga294/yubioath-ios") {
                 UIApplication.shared.open(url)
             }
         default:
