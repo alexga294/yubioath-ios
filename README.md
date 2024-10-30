@@ -1,29 +1,13 @@
-# iOS application for OATH with YubiKeys
+# iOS application for TOTP generations with YubiKeys
 
-This app is hosted on the iOS App Store as 
-[Yubico Authenticator](https://apps.apple.com/se/app/yubico-authenticator/id1476679808).
+This app is a stripped-down version of Yubico Authenticator (forked from version 1.7).
+The app contains the following changes:
+- Fix for password protected YubiKeys for iOS 15 (the original version of the app was not displaying the password textbox, due to alert limitations in iOS 15)
+- Made app read-only - it only allows to generate TOTPs for existing accounts on a YubiKey, and doesn't allow to add/remove accounts.
+
+The app is intended to be used as an offline TOTP authenticator on iOS15 devices, like iPod touch.
 
 See the file LICENSE for copyright and license information.
-
-## OATH functionality
-
-This is an authenticator app compatible with the OATH standard for time and
-counter based numeric OTPs, as used by many online services. To store these
-credentials and generate the codes, it uses a compatible YubiKey, connected
-either via NFC or the Lightning port.
-
-Add credentials by tapping the menu icon, selecting `Add account` and then
-either add a credential by scanning a QR code, or by tapping the `Enter manually`
-button.
-
-Once credentials have been added, simply tap or connect your YubiKey to display
-codes.
-
-## CryptTokenKit extension
-
-Besides the OATH functionality this app also support authetication using the CTK extension
-functionality provided by Apple. The authentication is handled using certificates stored 
-in the Smart card application on the YubiKey.
 
 ## Development
 
@@ -32,7 +16,3 @@ This app is developed in Xcode and the only external dependency is the
 the Swift Package Manager. To build the app simply open the project file and hit
 the build button.
 
-## Issues
-
-Please report app issues in
-[the issue tracker on GitHub](https://github.com/Yubico/yubioath-ios).
